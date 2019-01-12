@@ -7,7 +7,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
 import os
 
-def cnn_net(size):
+def cnn(size):
     model = Sequential()
     model.add(Convolution2D(16, 5, 5, W_regularizer=l2(5e-4), border_mode='same', input_shape=(size[0], size[1], 3)))
     model.add(BatchNormalization())

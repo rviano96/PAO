@@ -1,3 +1,4 @@
+from model.model import cnn
 from keras.layers import Conv2D, Flatten, Lambda, MaxPooling2D, Dropout
 from keras.models import Model, Sequential
 import glob
@@ -7,7 +8,7 @@ from sklearn.model_selection import train_test_split as trainTestSplit
 import pickle
 import os
 from keras.callbacks import ModelCheckpoint
-from model.model import poolerPico
+
 from keras.models import Sequential
 from keras.regularizers import l2
 from keras.layers import Convolution2D, MaxPooling2D
@@ -27,7 +28,7 @@ def main():
     #images_dim = 64
     images_dim = 64 # heigth = 64, width = 64
     
-    sourceModel, modelName = poolerPico()
+    sourceModel = cnn()
    
     
     # Adding fully-connected layer to train the 'classifier'

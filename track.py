@@ -11,8 +11,8 @@ from keras.models import model_from_json
 
 
 def main():
-    #file = "/media/rodrigo/Rodrigo/vtest.avi"
-    file = "/media/rodrigo/Rodrigo/PAO/TownCentreXVID.avi"
+    file = "/media/rodrigo/Rodrigo/vtest.avi"
+    #file = "/media/rodrigo/Rodrigo/PAO/TownCentreXVID.avi"
     #file = "/media/rodrigo/Rodrigo/PAO/pedestrian_detection/aa.avi"
     iou=0.2
     track(file, iou)
@@ -72,7 +72,7 @@ def track(video, iou):
     #model = loadModelAndWeights("ped-18x36/modelcnn-18x36.json","ped-18x36/weights-18x36.h5")
     #model = loadModelAndWeights("kitti/modelVggV2-Kitti.json","kitti/savedweightsvgg-Kitti.h5")
     model = loadModelAndWeights("ped-64x64/modelcnn-64x64.json","ped-64x64/weights-64x64.h5")
-    
+    #model = loadModelAndWeights("ped-36x18/modelcnn-36x18.json","ped-36x18/weights-36x18.h5")
     # Definition of MOG2 Background Subtraction
     bs = cv2.createBackgroundSubtractorMOG2(detectShadows=True)
     history = 20
@@ -81,6 +81,9 @@ def track(video, iou):
 
     track_list = []
     cv2.namedWindow("detection", cv2.WINDOW_NORMAL)
+    # Define the codec and create VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('test36x18.avi',fourcc, 20.0, (y_size,x_size))
     while True:
         res, frame = camera.read()
 
@@ -106,6 +109,8 @@ def track(video, iou):
                 img = frame[y: y + h, x: x + w, :]
                 #if using model 18 x36
                 #rimg = cv2.resize(img, (36, 18), interpolation=cv2.INTER_CUBIC)
+                #if using model 36x18
+                #rimg = cv2.resize(img, (18, 36), interpolation=cv2.INTER_CUBIC)
                 #if using model 64x64
                 rimg = cv2.resize(img, (64, 64), interpolation=cv2.INTER_CUBIC)
                 #if using model kitti
@@ -114,7 +119,7 @@ def track(video, iou):
                 image_data /= 255.
                 roi = np.expand_dims(image_data, axis=0)
                 flag = model.predict(roi)
-
+                
                 if flag[0][0] > 0.5:
                     e = Entity(counter, (x, y, w, h), frame)
 
@@ -141,11 +146,14 @@ def track(video, iou):
                 else:
                     track_list.remove(e)
         frames += 1
+        out.write(frame)
         cv2.imshow("detection", frame)
+        #cv2.imshow("detection",fg_mask)
+        
         if cv2.waitKey(110) & 0xff == 27:
             break
     camera.release()
-
+    out.release()
 
 if __name__ == '__main__':
     main() 

@@ -10,13 +10,8 @@ from keras.callbacks import ModelCheckpoint
 
 
 
-def poolerPico(inputShape=(64, 64, 3)):
-    """
-    So-called 'Fully-convolutional Neural Network' (FCNN). Single filter in the top layer
-    used for binary classification of 'vehicle/non-vehicle'
-    :param inputShape: 
-    :return: Keras model, model name
-    """
+def cnn(inputShape=(64, 64, 3)):
+
     model = Sequential()
     # Center and normalize our data
     model.add(Lambda(lambda x: x / 255., input_shape=inputShape, output_shape=inputShape))
@@ -37,5 +32,5 @@ def poolerPico(inputShape=(64, 64, 3)):
     # binary 'classifier'
     model.add(Conv2D(filters=1, kernel_size=(8, 8), name='fcn', activation="sigmoid"))
 
-    return model, 'ppico'
+    return model
 
